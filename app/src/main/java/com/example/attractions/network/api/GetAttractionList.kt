@@ -1,9 +1,7 @@
 package com.example.attractions.network.api
 
 import android.util.Log
-import com.example.attractions.network.RequestFuture
-import com.example.attractions.network.RetrofitCallback
-import com.example.attractions.network.RetrofitManager
+import com.example.attractions.network.*
 import com.example.attractions.network.model.AttractionList
 import org.w3c.dom.Attr
 import retrofit2.Call
@@ -51,5 +49,6 @@ class GetAttractionList {
                 }
             })*/
         }
+
     }
 }

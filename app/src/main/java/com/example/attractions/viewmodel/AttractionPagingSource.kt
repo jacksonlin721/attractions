@@ -8,13 +8,12 @@ import kotlinx.coroutines.flow.collectLatest
 
 class AttractionPagingSource(private val mAttractionViewModel: AttractionViewModel) :
     PagingSource<Int, Data>() {
+    val init_page = 1
 
-    override fun getRefreshKey(state: PagingState<Int, Data>): Int? {
-        return 0
-    }
+    override fun getRefreshKey(state: PagingState<Int, Data>): Int? = null
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Data> {
-        val page = params.key ?: 1
+        val page = params.key ?: init_page
         return try {
             var attractionList: MutableList<Data> = mutableListOf()
             mAttractionViewModel.loadAttractionList(page.toString()).collect {
@@ -23,7 +22,7 @@ class AttractionPagingSource(private val mAttractionViewModel: AttractionViewMod
 
             LoadResult.Page(
                 data = attractionList,
-                prevKey = if (page == 1) null else page - 1,
+                prevKey = if (page == init_page) null else page - 1,
                 nextKey = if (attractionList.isEmpty()) null else page + 1
             )
         } catch (e: Exception) {

@@ -2,6 +2,7 @@ package com.example.attractions.network
 
 import android.os.SystemClock
 import retrofit2.Call
+import java.util.Objects
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
@@ -57,13 +58,13 @@ class RequestFuture<T>: Future<T> {
         }
         if (timeoutMs == null) {
             while (!isDone) {
-//                wait(0)
+                (this as Object).wait(0)
             }
         } else if (timeoutMs > 0) {
             var nowMs = SystemClock.uptimeMillis()
             val deadlineMs = nowMs + timeoutMs
             while (!isDone && nowMs < deadlineMs) {
-//                wait(deadlineMs - nowMs)
+                (this as Object).wait(deadlineMs - nowMs)
                 nowMs = SystemClock.uptimeMillis()
             }
         }
@@ -80,7 +81,7 @@ class RequestFuture<T>: Future<T> {
     fun onResponse(response: T) {
         mResultReceived = true
         mResult = response
-//        notifyAll()
+        (this as Object).notifyAll()
     }
 
     @Synchronized
@@ -90,6 +91,6 @@ class RequestFuture<T>: Future<T> {
         } else {
             mException = VolleyError(t.message)
         }
-//        notifyAll()
+        (this as Object).notifyAll()
     }
 }

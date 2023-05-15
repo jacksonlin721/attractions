@@ -6,6 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.attractions.network.ApiCallback
 import com.example.attractions.network.RequestFuture
 import com.example.attractions.network.api.GetAttractionList
 import com.example.attractions.network.model.AttractionList
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import java.util.concurrent.TimeUnit
 
 class AttractionViewModel: ViewModel() {
     val LIST_COUNT = 30
@@ -37,9 +39,9 @@ class AttractionViewModel: ViewModel() {
                 page,
                 future
             )
-            emit(future.get())
-        }.map {
+            emit(future.get().data)
+        }/*.map {
             return@map it.data
-        }.flowOn(Dispatchers.IO)
+        }*/.flowOn(Dispatchers.IO)
     }
 }

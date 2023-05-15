@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.attractions.R
 import com.example.attractions.viewmodel.AttractionViewModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class MainFragment: Fragment() {

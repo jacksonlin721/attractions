@@ -13,8 +13,7 @@ import com.example.attractions.network.model.Data
 import com.example.attractions.util.PhotoDisplayUtil
 import org.w3c.dom.Attr
 
-class AttractionListAdapter(context: Context): PagingDataAdapter<Data, AttractionListViewHolder>(itemDiffCallback) {
-    var mContext: Context? = null
+class AttractionListAdapter(val mContext: Context): PagingDataAdapter<Data, AttractionListViewHolder>(itemDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttractionListViewHolder {
         val view =
@@ -26,8 +25,8 @@ class AttractionListAdapter(context: Context): PagingDataAdapter<Data, Attractio
         val item = getItem(position)
         if (item?.images?.size!! > 0)
             PhotoDisplayUtil.showPhoto(
-                mContext!!,
-                item.images[0].toString(),
+                mContext,
+                item.images[0].src.toString(),
                 holder.ivAttraction
             )
         holder.tvAttrTitle.text = item.name
@@ -42,14 +41,14 @@ class AttractionListAdapter(context: Context): PagingDataAdapter<Data, Attractio
                     oldItem: Data,
                     newItem: Data
                 ): Boolean {
-                    return false
+                    return oldItem.id == newItem.id
                 }
 
                 override fun areContentsTheSame(
                     oldItem: Data,
                     newItem: Data
                 ): Boolean {
-                    return false
+                    return oldItem.name == newItem.name
                 }
 
             }
