@@ -3,17 +3,19 @@ package com.example.attractions.view
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import com.example.attractions.R
-import com.example.attractions.network.model.AttractionList
 import com.example.attractions.network.model.Data
 import com.example.attractions.util.PhotoDisplayUtil
-import org.w3c.dom.Attr
 
-class AttractionListAdapter(val mContext: Context): PagingDataAdapter<Data, AttractionListViewHolder>(itemDiffCallback) {
+class AttractionListAdapter(private val mContext: Context):
+    PagingDataAdapter<Data, AttractionListViewHolder>(itemDiffCallback) {
+    var mItemClicklistener: OnItemClicklistener? = null
+
+    interface OnItemClicklistener {
+        fun onItemClick(item: Data)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttractionListViewHolder {
         val view =
@@ -31,8 +33,14 @@ class AttractionListAdapter(val mContext: Context): PagingDataAdapter<Data, Attr
             )
         holder.tvAttrTitle.text = item.name
         holder.tvAttrDescription.text = item.introduction
+        holder.itemView.setOnClickListener {
+            mItemClicklistener?.onItemClick(item)
+        }
     }
 
+    fun setItemClicklistener(itemClicklistener: OnItemClicklistener) {
+        mItemClicklistener = itemClicklistener
+    }
 
     companion object {
         val itemDiffCallback: DiffUtil.ItemCallback<Data> =

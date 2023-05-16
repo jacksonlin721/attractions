@@ -1,5 +1,7 @@
 package com.example.attractions.network.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class Data(
@@ -32,4 +34,76 @@ data class Data(
     @SerializedName("images"        ) var images       : ArrayList<Images>   = arrayListOf(),
     @SerializedName("files"         ) var files        : ArrayList<String>   = arrayListOf(),
     @SerializedName("links"         ) var links        : ArrayList<Links>   = arrayListOf()
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readValue(Double::class.java.classLoader) as? Double,
+        parcel.readValue(Double::class.java.classLoader) as? Double,
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.createTypedArrayList(Category)!!,
+        parcel.createTypedArrayList(Target)!!,
+        parcel.createTypedArrayList(Service)!!,
+        parcel.createStringArrayList()!!,
+        parcel.createTypedArrayList(Images)!!,
+        parcel.createStringArrayList()!!,
+        parcel.createTypedArrayList(Links)!!
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeValue(id)
+        parcel.writeString(name)
+        parcel.writeString(nameZh)
+        parcel.writeValue(openStatus)
+        parcel.writeString(introduction)
+        parcel.writeString(openTime)
+        parcel.writeString(zipcode)
+        parcel.writeString(distric)
+        parcel.writeString(address)
+        parcel.writeString(tel)
+        parcel.writeString(fax)
+        parcel.writeString(email)
+        parcel.writeString(months)
+        parcel.writeValue(nlat)
+        parcel.writeValue(elong)
+        parcel.writeString(officialSite)
+        parcel.writeString(facebook)
+        parcel.writeString(ticket)
+        parcel.writeString(remind)
+        parcel.writeString(staytime)
+        parcel.writeString(modified)
+        parcel.writeString(url)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Data> {
+        override fun createFromParcel(parcel: Parcel): Data {
+            return Data(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Data?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

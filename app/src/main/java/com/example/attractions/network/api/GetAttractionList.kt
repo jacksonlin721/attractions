@@ -11,10 +11,16 @@ import retrofit2.Response
 class GetAttractionList {
     companion object {
 
+        suspend fun getAttractionListSuspend(language: String, page: String): AttractionList {
+            return RetrofitManager.getInstance().attrationListAPI.getAttractionListSuspend(
+                language, page
+            )
+        }
+
         fun getAttractionList(language: String, page: String, future: RequestFuture<AttractionList>) {
 //            val url = RetrofitManager.getInstance().baseUrl + "zh-tw/Attractions/All?"
 //            RetrofitManager.getInstance().attrationListAPI.getAttractionListURL(
-            RetrofitManager.getInstance().attrationListAPI.getAttractionList(
+            /*RetrofitManager.getInstance().attrationListAPI.getAttractionList(
                 language, page
             ).enqueue(object : Callback<AttractionList> {
                 override fun onResponse(
@@ -29,9 +35,9 @@ class GetAttractionList {
                     future.onErrorResponse(call, t)
                 }
 
-            })
+            })*/
 
-            /*RetrofitManager.getInstance().attrationListAPI.getAttractionList(
+            RetrofitManager.getInstance().attrationListAPI.getAttractionList(
                 language, page
             ).enqueue(object : RetrofitCallback<AttractionList>() {
                 override fun onResponse(
@@ -39,15 +45,15 @@ class GetAttractionList {
                     response: Response<AttractionList>
                 ) {
                     super.onResponse(call, response)
-                    Log.e("GetAttractionList", "response= ${response.body()}")
-                    future.onResponse(response.body()!!)
+//                    Log.e("GetAttractionList", "response= ${response.body()}")
+                    future.onResponse(response.body())
                 }
 
                 override fun onFailure(call: Call<AttractionList>, t: Throwable) {
                     super.onFailure(call, t)
                     future.onErrorResponse(call, t)
                 }
-            })*/
+            })
         }
 
     }

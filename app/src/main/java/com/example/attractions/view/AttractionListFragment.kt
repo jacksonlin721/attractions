@@ -3,20 +3,21 @@ package com.example.attractions.view
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.attractions.MainActivity
 import com.example.attractions.R
+import com.example.attractions.network.model.Data
 import com.example.attractions.viewmodel.AttractionViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class MainFragment: Fragment() {
+class AttractionListFragment: Fragment() {
     var mView: View? = null
     var progressBar: ProgressBar? = null
     var mAttractionListAdapter: AttractionListAdapter? = null
@@ -41,20 +42,22 @@ class MainFragment: Fragment() {
 
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mAttractionViewModel.attractionListPagingFlow.collect {
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mAttractionViewModel.attractionListPagingFlow.collectLatest {
                     setLoadingVisibility(false)
                     mAttractionListAdapter?.submitData(it)
                 }
-            }
+//            }
         }
     }
 
     private fun initUI() {
+        (requireActivity() as MainActivity).mToolbar?.title = requireContext().getString(R.string.app_name)
         val recyclerView = mView?.findViewById<RecyclerView>(R.id.rv_attractions)
         progressBar = mView?.findViewById(R.id.progress_bar)
         mAttractionListAdapter = AttractionListAdapter(requireContext())
         recyclerView?.adapter = mAttractionListAdapter
+        recyclerView?.layoutManager = LinearLayoutManager(requireContext())
         mAttractionListAdapter?.addLoadStateListener {
             when (it.append) {
                 is LoadState.Loading -> setLoadingVisibility(true)
@@ -62,6 +65,18 @@ class MainFragment: Fragment() {
                 is LoadState.NotLoading -> setLoadingVisibility(false)
             }
         }
+        mAttractionListAdapter?.setItemClicklistener(object :
+            AttractionListAdapter.OnItemClicklistener {
+            override fun onItemClick(data: Data) {
+                val bundle = bundleOf(
+                    "data" to data
+                )
+                (requireActivity() as? MainActivity)?.navController?.navigate(
+                    R.id.detail_fragment,
+                    bundle
+                )
+            }
+        })
     }
 
     private fun setLoadingVisibility(visible: Boolean) {

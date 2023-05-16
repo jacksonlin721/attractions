@@ -9,9 +9,9 @@ import retrofit2.Response
 abstract class RetrofitCallback<T>: Callback<T> {
 
     override fun onResponse(call: Call<T>, response: Response<T>) {
-        Log.e("RetrofitCallback", "Retrofit request url ${call.request().url()}")
+//        Log.e("RetrofitCallback", "Retrofit request url ${call.request().url()}")
         val response: String = Gson().toJson(response.body())
-        Log.e("RetrofitCallback", "Retrofit response $response")
+//        Log.e("RetrofitCallback", "Retrofit response $response")
     }
 
     override fun onFailure(call: Call<T>, t: Throwable) {

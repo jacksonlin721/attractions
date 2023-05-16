@@ -12,6 +12,9 @@ interface AttrationListService {
     @GET("{lang}/Attractions/All?")
     fun getAttractionList(@Path("lang") language: String, @Query("page") p: String): Call<AttractionList>
 
+    @GET("{lang}/Attractions/All?")
+    suspend fun getAttractionListSuspend(@Path("lang") language: String, @Query("page") p: String): AttractionList
+
     @GET
     fun getAttractionListURL(@Url url: String, @Query("page") p: String): Call<AttractionList>
 }

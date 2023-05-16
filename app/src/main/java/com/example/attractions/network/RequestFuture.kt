@@ -78,7 +78,7 @@ class RequestFuture<T>: Future<T> {
     }
 
     @Synchronized
-    fun onResponse(response: T) {
+    fun onResponse(response: T?) {
         mResultReceived = true
         mResult = response
         (this as Object).notifyAll()

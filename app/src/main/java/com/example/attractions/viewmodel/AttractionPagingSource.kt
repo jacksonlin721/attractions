@@ -1,5 +1,6 @@
 package com.example.attractions.viewmodel
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.attractions.network.model.AttractionList
@@ -14,16 +15,17 @@ class AttractionPagingSource(private val mAttractionViewModel: AttractionViewMod
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Data> {
         val page = params.key ?: init_page
+        Log.e("AttractionPagingSource", "page= $page")
         return try {
-            var attractionList: MutableList<Data> = mutableListOf()
-            mAttractionViewModel.loadAttractionList(page.toString()).collect {
-                attractionList = it
-            }
+//            var attractionList: MutableList<Data> = mutableListOf()
+            val attractionList = mAttractionViewModel.loadAttractionListSuspend(page.toString())/*.collect {*/
+//                attractionList = it
+//            }
 
             LoadResult.Page(
                 data = attractionList,
                 prevKey = if (page == init_page) null else page - 1,
-                nextKey = if (attractionList.isEmpty()) null else page + 1
+                nextKey = /*if (attractionList.isEmpty()) null else*/ page + 1
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
