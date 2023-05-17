@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="5dp"
-        tools:src="@android:drawable/star_on"/>
+        android:src="@android:drawable/star_on"/>
 
     <TextView
         android:id="@+id/tv_title"
@@ -54,6 +54,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="5dp"
-        tools:src="@android:drawable/star_on"/>
+        android:src="@drawable/icon_right_arrow"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

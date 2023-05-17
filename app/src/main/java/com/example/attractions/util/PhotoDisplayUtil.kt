@@ -6,7 +6,7 @@ import com.bumptech.glide.Glide
 
 object PhotoDisplayUtil {
 
-    fun showPhoto(context: Context, url: String, imageView: ImageView) {
+    fun showPhoto(context: Context, url: String?, imageView: ImageView) {
         Glide
             .with(context)
             .load(url)

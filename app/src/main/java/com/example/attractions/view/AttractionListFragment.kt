@@ -23,7 +23,7 @@ class AttractionListFragment: Fragment(), LanguageCheckboxDialog.OnItemSelectLis
     var progressBar: ProgressBar? = null
     var mAttractionListAdapter: AttractionListAdapter? = null
     val mAttractionViewModel by lazy {
-        ViewModelProvider(this).get(AttractionViewModel::class.java)
+        ViewModelProvider(requireActivity()).get(AttractionViewModel::class.java)
     }
     var selectedLangIdx = 0
 
