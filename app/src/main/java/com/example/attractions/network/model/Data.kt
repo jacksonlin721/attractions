@@ -30,7 +30,7 @@ data class Data(
     @SerializedName("category"      ) var category     : ArrayList<Category> = arrayListOf(),
     @SerializedName("target"        ) var target       : ArrayList<Target>   = arrayListOf(),
     @SerializedName("service"       ) var service      : ArrayList<Service>   = arrayListOf(),
-    @SerializedName("friendly"      ) var friendly     : ArrayList<String>   = arrayListOf(),
+    @SerializedName("friendly"      ) var friendly     : ArrayList<Service>   = arrayListOf(),
     @SerializedName("images"        ) var images       : ArrayList<Images>   = arrayListOf(),
     @SerializedName("files"         ) var files        : ArrayList<String>   = arrayListOf(),
     @SerializedName("links"         ) var links        : ArrayList<Links>   = arrayListOf()
@@ -61,7 +61,7 @@ data class Data(
         parcel.createTypedArrayList(Category)!!,
         parcel.createTypedArrayList(Target)!!,
         parcel.createTypedArrayList(Service)!!,
-        parcel.createStringArrayList()!!,
+        parcel.createTypedArrayList(Service)!!,
         parcel.createTypedArrayList(Images)!!,
         parcel.createStringArrayList()!!,
         parcel.createTypedArrayList(Links)!!

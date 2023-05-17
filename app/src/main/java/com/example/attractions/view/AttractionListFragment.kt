@@ -5,8 +5,10 @@ import android.view.*
 import android.widget.ProgressBar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,15 +16,20 @@ import com.example.attractions.MainActivity
 import com.example.attractions.R
 import com.example.attractions.network.model.Data
 import com.example.attractions.viewmodel.AttractionViewModel
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class AttractionListFragment: Fragment() {
+class AttractionListFragment: Fragment(), LanguageCheckboxDialog.OnItemSelectListener {
     var mView: View? = null
     var progressBar: ProgressBar? = null
     var mAttractionListAdapter: AttractionListAdapter? = null
     val mAttractionViewModel by lazy {
         ViewModelProvider(this).get(AttractionViewModel::class.java)
+    }
+    var selectedLangIdx = 0
+
+    companion object {
+        val langKey = arrayListOf("zh-tw", "zh-cn", "en", "ja", "ko", "es", "id", "th", "vi")
+        val langValue = arrayListOf("正體中文", "簡體中文", "英文", "日文", "韓文", "西班牙文", "印尼文", "泰文", "越南文")
     }
 
     override fun onCreateView(
@@ -33,6 +40,7 @@ class AttractionListFragment: Fragment() {
         mView =
             inflater.inflate(R.layout.fragment_attraction_list, container, false)
         initUI()
+        setHasOptionsMenu(true)
         return mView
     }
 
@@ -42,12 +50,12 @@ class AttractionListFragment: Fragment() {
 
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mAttractionViewModel.attractionListPagingFlow.collectLatest {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mAttractionViewModel.attractionListPagingFlow.collect {
                     setLoadingVisibility(false)
                     mAttractionListAdapter?.submitData(it)
                 }
-//            }
+            }
         }
     }
 
@@ -65,6 +73,7 @@ class AttractionListFragment: Fragment() {
                 is LoadState.NotLoading -> setLoadingVisibility(false)
             }
         }
+
         mAttractionListAdapter?.setItemClicklistener(object :
             AttractionListAdapter.OnItemClicklistener {
             override fun onItemClick(data: Data) {
@@ -92,9 +101,22 @@ class AttractionListFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.item_change_lang -> {
-
+                showLanguageDialog()
             }
         }
         return false
+    }
+
+    private fun showLanguageDialog() {
+        val checkboxDialog = LanguageCheckboxDialog(requireContext(), langValue, mAttractionViewModel.mLanguageIdx)
+        checkboxDialog.setLangCallback(this)
+        checkboxDialog.setSelectedItem(mAttractionViewModel.mLanguageIdx)
+        checkboxDialog.showDialog()
+    }
+
+    override fun selectLanguage(position: Int) {
+        mAttractionViewModel.mLanguageIdx = position
+        mAttractionViewModel.mLanguage = langKey[position]
+        mAttractionListAdapter?.refresh()
     }
 }

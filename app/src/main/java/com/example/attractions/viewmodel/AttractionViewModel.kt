@@ -18,20 +18,22 @@ import kotlinx.coroutines.withContext
 
 class AttractionViewModel: ViewModel() {
     val LIST_COUNT = 30
+    var mLanguage = "zh-tw"
+    var mLanguageIdx = 0
 
     val attractionListPagingFlow: Flow<PagingData<Data>> = Pager(
         config = PagingConfig(
             enablePlaceholders = false,
             pageSize = LIST_COUNT
         ),
-        pagingSourceFactory = { AttractionPagingSource(this) }
+        pagingSourceFactory = { AttractionPagingSource(this, mLanguage) }
     ).flow.cachedIn(viewModelScope)
 
-    fun loadAttractionList(page: String): Flow<MutableList<Data>> {
+    fun loadAttractionList(page: String, language: String = "zh-tw"): Flow<MutableList<Data>> {
         return flow {
             val future = RequestFuture.newFuture<AttractionList>()!!
             GetAttractionList.getAttractionList(
-                "zh-tw",
+                language,
                 page,
                 future
             )

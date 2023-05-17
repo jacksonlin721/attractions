@@ -20,23 +20,6 @@ class GetAttractionList {
         fun getAttractionList(language: String, page: String, future: RequestFuture<AttractionList>) {
 //            val url = RetrofitManager.getInstance().baseUrl + "zh-tw/Attractions/All?"
 //            RetrofitManager.getInstance().attrationListAPI.getAttractionListURL(
-            /*RetrofitManager.getInstance().attrationListAPI.getAttractionList(
-                language, page
-            ).enqueue(object : Callback<AttractionList> {
-                override fun onResponse(
-                    call: Call<AttractionList>,
-                    response: Response<AttractionList>
-                ) {
-//                    Log.e("GetAttractionList", "response= ${response.body()}")
-                    future.onResponse(response.body()!!)
-                }
-
-                override fun onFailure(call: Call<AttractionList>, t: Throwable) {
-                    future.onErrorResponse(call, t)
-                }
-
-            })*/
-
             RetrofitManager.getInstance().attrationListAPI.getAttractionList(
                 language, page
             ).enqueue(object : RetrofitCallback<AttractionList>() {

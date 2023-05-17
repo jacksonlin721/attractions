@@ -7,8 +7,10 @@ import com.example.attractions.network.model.AttractionList
 import com.example.attractions.network.model.Data
 import kotlinx.coroutines.flow.collectLatest
 
-class AttractionPagingSource(private val mAttractionViewModel: AttractionViewModel) :
-    PagingSource<Int, Data>() {
+class AttractionPagingSource(
+    private val mAttractionViewModel: AttractionViewModel,
+    private val language: String= "zh-tw"
+) : PagingSource<Int, Data>() {
     val init_page = 1
 
     override fun getRefreshKey(state: PagingState<Int, Data>): Int? = null
@@ -17,15 +19,15 @@ class AttractionPagingSource(private val mAttractionViewModel: AttractionViewMod
         val page = params.key ?: init_page
         Log.e("AttractionPagingSource", "page= $page")
         return try {
-//            var attractionList: MutableList<Data> = mutableListOf()
-            val attractionList = mAttractionViewModel.loadAttractionListSuspend(page.toString())/*.collect {*/
-//                attractionList = it
-//            }
+            var attractionList: MutableList<Data> = mutableListOf()
+            mAttractionViewModel.loadAttractionList(page.toString(), language).collect {
+                attractionList = it
+            }
 
             LoadResult.Page(
                 data = attractionList,
                 prevKey = if (page == init_page) null else page - 1,
-                nextKey = /*if (attractionList.isEmpty()) null else*/ page + 1
+                nextKey = if (attractionList.isEmpty()) null else page + 1
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

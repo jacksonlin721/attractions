@@ -4,6 +4,6 @@
     <item
         android:id="@+id/item_change_lang"
         android:title="Change language"
-        android:icon="@android:drawable/star_on"
+        android:icon="@android:drawable/ic_menu_more"
         app:showAsAction="always"/>
 </menu>
