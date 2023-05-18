@@ -9,5 +9,9 @@
   a. Show attraction detail pages which data passed from previous page via navigation bundle.
   b. Show single attraction images via viewpager2 library and 3rd-party viewpager indicator.
   c. Open webview to show attraction webpage.
+
 [Network]
 1. Use Retrofit 3rd-party library to do API request.
+
+[Unit test]
+1. Add AttractionViewModelTestClass unit test class.
