@@ -25,12 +25,14 @@ class AttractionListAdapter(private val mContext: Context):
 
     override fun onBindViewHolder(holder: AttractionListViewHolder, position: Int) {
         val item = getItem(position)
-        if (item?.images?.size!! > 0)
-            PhotoDisplayUtil.showPhoto(
-                mContext,
-                item.images[0].src.toString(),
-                holder.ivAttraction
-            )
+        PhotoDisplayUtil.showPhoto(
+            mContext,
+            if (item?.images?.size!! > 0)
+                item.images[0].src.toString()
+            else
+                null,
+            holder.ivAttraction
+        )
         holder.tvAttrTitle.text = item.name
         holder.tvAttrDescription.text = item.introduction
         holder.itemView.setOnClickListener {
