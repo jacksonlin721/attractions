@@ -55,10 +55,10 @@ class AttractionDetailFragment: Fragment() {
         mView?.findViewById<TextView>(R.id.tv_title)?.text = data.name
         mView?.findViewById<TextView>(R.id.tv_description)?.text = data.introduction
         mView?.findViewById<TextView>(R.id.tv_address_title)?.text =
-            getStringByLocale(R.string.str_address)
+            mAttractionViewModel.getStringByLocale(R.string.str_address, requireContext())
         mView?.findViewById<TextView>(R.id.tv_address)?.text = data.address
         mView?.findViewById<TextView>(R.id.tv_update_time_title)?.text =
-            getStringByLocale(R.string.str_last_update_time)
+            mAttractionViewModel.getStringByLocale(R.string.str_last_update_time, requireContext())
         mView?.findViewById<TextView>(R.id.tv_update_time)?.text = data.modified
         if (data.links.size > 0)
             initTextLink(data.links[0].subject, data.links[0].src)
@@ -71,20 +71,6 @@ class AttractionDetailFragment: Fragment() {
             mView?.findViewById<ViewPager2>(R.id.view_pager)?.visibility = View.GONE
             mView?.findViewById<WormDotsIndicator>(R.id.dotsIndicator)?.visibility = View.GONE
         }
-    }
-
-    private fun getStringByLocale(strRes: Int): String {
-        val desiredLocale =
-            if (mAttractionViewModel.mLanguage == "zh-tw" ||
-                mAttractionViewModel.mLanguage == "zh-cn")
-                Locale("zh", "TW")
-        else
-                Locale("en", "US")
-        val resources: Resources = resources
-        val configuration: Configuration = resources.configuration
-        configuration.setLocale(desiredLocale)
-        resources.updateConfiguration(configuration, resources.displayMetrics)
-        return resources.getString(strRes)
     }
 
     private fun initTextLink(linkText: String?, url: String?) {

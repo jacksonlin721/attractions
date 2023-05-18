@@ -1,5 +1,8 @@
 package com.example.attractions.viewmodel
 
+import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -15,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import java.util.*
 
 class AttractionViewModel: ViewModel() {
     val LIST_COUNT = 30
@@ -46,5 +50,19 @@ class AttractionViewModel: ViewModel() {
             val attractionList = GetAttractionList.getAttractionListSuspend("zh-tw", page)
             attractionList.data
         }
+    }
+
+    fun getStringByLocale(strRes: Int, context: Context): String {
+        val desiredLocale =
+            if (mLanguage == "zh-tw" ||
+                mLanguage == "zh-cn")
+                Locale("zh", "TW")
+            else
+                Locale("en", "US")
+        val resources: Resources = context.resources
+        val configuration: Configuration = resources.configuration
+        configuration.setLocale(desiredLocale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+        return resources.getString(strRes)
     }
 }
