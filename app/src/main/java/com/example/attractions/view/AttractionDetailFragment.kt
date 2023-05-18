@@ -61,10 +61,16 @@ class AttractionDetailFragment: Fragment() {
             getStringByLocale(R.string.str_last_update_time)
         mView?.findViewById<TextView>(R.id.tv_update_time)?.text = data.modified
         if (data.links.size > 0)
-            initTextLink(data.links[0])
+            initTextLink(data.links[0].subject, data.links[0].src)
+        else
+            initTextLink(data.url, data.url)
 
-        initViewPagerUI(data)
-
+        if (data.images.size > 0)
+            initViewPagerUI(data)
+        else {
+            mView?.findViewById<ViewPager2>(R.id.view_pager)?.visibility = View.GONE
+            mView?.findViewById<WormDotsIndicator>(R.id.dotsIndicator)?.visibility = View.GONE
+        }
     }
 
     private fun getStringByLocale(strRes: Int): String {
@@ -81,10 +87,8 @@ class AttractionDetailFragment: Fragment() {
         return resources.getString(strRes)
     }
 
-    private fun initTextLink(link: Links) {
+    private fun initTextLink(linkText: String?, url: String?) {
         val linkTextView = mView?.findViewById<TextView>(R.id.tv_link)
-        val linkText = link.subject
-        val url = link.src
         val spannableString = SpannableString(linkText)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
