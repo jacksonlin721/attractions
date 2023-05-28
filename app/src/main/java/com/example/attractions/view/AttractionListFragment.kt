@@ -76,17 +76,16 @@ class AttractionListFragment: Fragment(), LanguageCheckboxDialog.OnItemSelectLis
 
     private fun initUI() {
         (requireActivity() as MainActivity).mToolbar?.title = requireContext().getString(R.string.app_name)
-        val recyclerView = binding.rvAttractions
         progressBar = binding.progressBar
-        mAttractionViewModel.progressVisible.postValue(View.VISIBLE)
+        binding.loadState = LoadState.Loading
         mAttractionListAdapter = AttractionListAdapter(requireContext())
-        recyclerView.adapter = mAttractionListAdapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvAttractions.run {
+            adapter = mAttractionListAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
         mAttractionListAdapter?.addLoadStateListener {
-            when (it.append) {
-                is LoadState.Loading -> mAttractionViewModel.progressVisible.postValue(View.VISIBLE)
-                is LoadState.Error,
-                is LoadState.NotLoading -> mAttractionViewModel.progressVisible.postValue(View.GONE)
+            it.append.run {
+                binding.loadState = this
             }
         }
 

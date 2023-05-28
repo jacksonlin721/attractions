@@ -10,6 +10,9 @@
         <variable
             name="vm"
             type="com.example.attractions.viewmodel.AttractionViewModel" />
+        <variable
+            name="loadState"
+            type="androidx.paging.LoadState" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:showProgress="@{progressVisible}"
+            app:showProgress="@{loadState}"
             android:visibility="gone"
             tools:visibility="visible"/>
 

@@ -6,10 +6,7 @@ import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import androidx.paging.*
 import com.example.attractions.network.RequestFuture
 import com.example.attractions.network.api.GetAttractionList
 import com.example.attractions.network.model.AttractionList
