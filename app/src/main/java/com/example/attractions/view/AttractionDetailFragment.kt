@@ -3,7 +3,6 @@ package com.example.attractions.view
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
@@ -17,13 +16,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.attractions.MainActivity
 import com.example.attractions.R
+import com.example.attractions.databinding.FragmentAttractionDetailBinding
 import com.example.attractions.network.model.Data
 import com.example.attractions.network.model.Images
 import com.example.attractions.network.model.Links
@@ -32,11 +29,11 @@ import com.example.attractions.view.AttractionDetailFragment.ViewPagerAdapter.It
 import com.example.attractions.viewmodel.AttractionViewModel
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class AttractionDetailFragment: Fragment() {
     var mView: View? = null
+    lateinit var binding: FragmentAttractionDetailBinding
     val mAttractionViewModel: AttractionViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -44,7 +41,10 @@ class AttractionDetailFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mView = inflater.inflate(R.layout.fragment_attraction_detail, container, false)
+        binding = FragmentAttractionDetailBinding.inflate(
+            inflater, container, false
+        )
+        mView = binding.root
         initUI()
         return mView
     }
@@ -52,14 +52,13 @@ class AttractionDetailFragment: Fragment() {
     private fun initUI() {
         val data: Data = arguments?.getParcelable("data")!!
         (requireActivity() as MainActivity).mToolbar?.title = data.name
-        mView?.findViewById<TextView>(R.id.tv_title)?.text = data.name
-        mView?.findViewById<TextView>(R.id.tv_description)?.text = data.introduction
-        mView?.findViewById<TextView>(R.id.tv_address_title)?.text =
-            mAttractionViewModel.getStringByLocale(R.string.str_address, requireContext())
-        mView?.findViewById<TextView>(R.id.tv_address)?.text = data.address
-        mView?.findViewById<TextView>(R.id.tv_update_time_title)?.text =
-            mAttractionViewModel.getStringByLocale(R.string.str_last_update_time, requireContext())
-        mView?.findViewById<TextView>(R.id.tv_update_time)?.text = data.modified
+        binding.tvTitle.text = data.name
+        binding.tvDescription.text = data.introduction
+        binding.tvAddress.text = data.address
+        binding.tvAddressTitle.text = getStringByLocale(R.string.str_address)
+        binding.tvUpdateTimeTitle.text = getStringByLocale(R.string.str_last_update_time)
+        binding.tvUpdateTime.text = data.modified
+
         if (data.links.size > 0)
             initTextLink(data.links[0].subject, data.links[0].src)
         else
@@ -73,8 +72,24 @@ class AttractionDetailFragment: Fragment() {
         }
     }
 
+    private fun getStringByLocale(strRes: Int): String {
+        val desiredLocale =
+            if (mAttractionViewModel.mLanguage == "zh-tw" ||
+                mAttractionViewModel.mLanguage == "zh-cn"
+            )
+                Locale("zh", "TW")
+            else
+                Locale("en", "US")
+
+        val resources: Resources = resources
+
+        val configuration: Configuration = resources.configuration
+        configuration.setLocale(desiredLocale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+        return resources.getString(strRes)
+    }
+
     private fun initTextLink(linkText: String?, url: String?) {
-        val linkTextView = mView?.findViewById<TextView>(R.id.tv_link)
         val spannableString = SpannableString(linkText)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
@@ -84,13 +99,13 @@ class AttractionDetailFragment: Fragment() {
         }
 
         spannableString.setSpan(clickableSpan, 0, linkText?.length!!, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        linkTextView?.text = spannableString
-        linkTextView?.movementMethod = LinkMovementMethod.getInstance()
+        binding.tvLink.text = spannableString
+        binding.tvLink.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun initViewPagerUI(data: Data) {
-        val viewPager: ViewPager2 = mView?.findViewById(R.id.view_pager)!!
-        val dotsIndicator: WormDotsIndicator = mView?.findViewById(R.id.dotsIndicator)!!
+        val viewPager: ViewPager2 = binding.viewPager
+        val dotsIndicator: WormDotsIndicator = binding.dotsIndicator
         val adapter = ViewPagerAdapter()
         viewPager.adapter = adapter
         viewPager.offscreenPageLimit = 10

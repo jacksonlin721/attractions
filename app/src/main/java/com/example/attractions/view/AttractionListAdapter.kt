@@ -3,41 +3,38 @@ package com.example.attractions.view
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModel
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.example.attractions.R
+import com.example.attractions.databinding.AttractionListBinding
 import com.example.attractions.network.model.Data
-import com.example.attractions.util.PhotoDisplayUtil
+import com.example.attractions.util.dataBind.EventClickHandler
+
 
 class AttractionListAdapter(private val mContext: Context):
-    PagingDataAdapter<Data, AttractionListViewHolder>(itemDiffCallback) {
+    PagingDataAdapter<Data, AttractionListViewHolder2>(itemDiffCallback) {
     var mItemClicklistener: OnItemClicklistener? = null
 
     interface OnItemClicklistener {
-        fun onItemClick(item: Data)
+        fun onItemClick(data: Data?)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttractionListViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.attraction_list, parent, false)
-        return AttractionListViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: AttractionListViewHolder, position: Int) {
-        val item = getItem(position)
-        PhotoDisplayUtil.showPhoto(
-            mContext,
-            if (item?.images?.size!! > 0)
-                item.images[0].src.toString()
-            else
-                null,
-            holder.ivAttraction
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttractionListViewHolder2 {
+        val view = DataBindingUtil.inflate<AttractionListBinding>(
+            LayoutInflater.from(parent.context),
+            R.layout.attraction_list,
+            parent,
+            false
         )
-        holder.tvAttrTitle.text = item.name
-        holder.tvAttrDescription.text = item.introduction
-        holder.itemView.setOnClickListener {
-            mItemClicklistener?.onItemClick(item)
-        }
+        return AttractionListViewHolder2(view)
+    }
+
+
+    override fun onBindViewHolder(holder: AttractionListViewHolder2, position: Int) {
+        val item = getItem(position)
+        holder.bindData(mContext, item, mItemClicklistener)
     }
 
     fun setItemClicklistener(itemClicklistener: OnItemClicklistener) {

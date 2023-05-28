@@ -3,6 +3,7 @@ package com.example.attractions.viewmodel
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -24,6 +25,7 @@ class AttractionViewModel: ViewModel() {
     val LIST_COUNT = 30
     var mLanguage = "zh-tw"
     var mLanguageIdx = 0
+    var progressVisible = MutableLiveData<Int>()
 
     val attractionListPagingFlow: Flow<PagingData<Data>> = Pager(
         config = PagingConfig(

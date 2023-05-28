@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class RetrofitManager {
+object RetrofitManager {
     val baseUrl = "https://www.travel.taipei/open-api/"
     val apiTimeout = 30L
 
@@ -42,13 +42,13 @@ class RetrofitManager {
         attrationListAPI = retrofit.create(AttrationListService::class.java)
     }
 
-    companion object {
-        private var mInstance: RetrofitManager? = null
-
-        fun getInstance(): RetrofitManager {
-            if (mInstance == null)
-                mInstance = RetrofitManager()
-            return mInstance!!
-        }
-    }
+//    companion object {
+//        private var mInstance: RetrofitManager? = null
+//
+//        fun getInstance(): RetrofitManager {
+//            if (mInstance == null)
+//                mInstance = RetrofitManager()
+//            return mInstance!!
+//        }
+//    }
 }

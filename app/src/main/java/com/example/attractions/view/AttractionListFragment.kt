@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
 import androidx.core.os.bundleOf
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.attractions.MainActivity
 import com.example.attractions.R
+import com.example.attractions.databinding.FragmentAttractionListBinding
 import com.example.attractions.network.model.Data
 import com.example.attractions.viewmodel.AttractionViewModel
 import kotlinx.coroutines.launch
@@ -26,6 +28,7 @@ class AttractionListFragment: Fragment(), LanguageCheckboxDialog.OnItemSelectLis
         ViewModelProvider(requireActivity()).get(AttractionViewModel::class.java)
     }
     var selectedLangIdx = 0
+    lateinit var binding: FragmentAttractionListBinding
 
     companion object {
         val langKey = arrayListOf("zh-tw", "zh-cn", "en", "ja", "ko", "es", "id", "th", "vi")
@@ -37,10 +40,18 @@ class AttractionListFragment: Fragment(), LanguageCheckboxDialog.OnItemSelectLis
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mView =
-            inflater.inflate(R.layout.fragment_attraction_list, container, false)
+        binding =
+            FragmentAttractionListBinding.inflate(
+                inflater, container, false
+            ).also {
+                it.vm = mAttractionViewModel
+                it.lifecycleOwner = viewLifecycleOwner
+            }
+
+        mView = binding.root
         initUI()
         setHasOptionsMenu(true)
+
         return mView
     }
 
@@ -57,26 +68,31 @@ class AttractionListFragment: Fragment(), LanguageCheckboxDialog.OnItemSelectLis
                 }
             }
         }
+
+        mAttractionViewModel.progressVisible.observe(viewLifecycleOwner) { visible ->
+            binding.progressVisible = visible
+        }
     }
 
     private fun initUI() {
         (requireActivity() as MainActivity).mToolbar?.title = requireContext().getString(R.string.app_name)
-        val recyclerView = mView?.findViewById<RecyclerView>(R.id.rv_attractions)
-        progressBar = mView?.findViewById(R.id.progress_bar)
+        val recyclerView = binding.rvAttractions
+        progressBar = binding.progressBar
+        mAttractionViewModel.progressVisible.postValue(View.VISIBLE)
         mAttractionListAdapter = AttractionListAdapter(requireContext())
-        recyclerView?.adapter = mAttractionListAdapter
-        recyclerView?.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = mAttractionListAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         mAttractionListAdapter?.addLoadStateListener {
             when (it.append) {
-                is LoadState.Loading -> setLoadingVisibility(true)
+                is LoadState.Loading -> mAttractionViewModel.progressVisible.postValue(View.VISIBLE)
                 is LoadState.Error,
-                is LoadState.NotLoading -> setLoadingVisibility(false)
+                is LoadState.NotLoading -> mAttractionViewModel.progressVisible.postValue(View.GONE)
             }
         }
 
         mAttractionListAdapter?.setItemClicklistener(object :
             AttractionListAdapter.OnItemClicklistener {
-            override fun onItemClick(data: Data) {
+            override fun onItemClick(data: Data?) {
                 val bundle = bundleOf(
                     "data" to data
                 )

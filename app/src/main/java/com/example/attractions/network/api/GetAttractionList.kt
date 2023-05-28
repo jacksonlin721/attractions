@@ -12,7 +12,7 @@ class GetAttractionList {
     companion object {
 
         suspend fun getAttractionListSuspend(language: String, page: String): AttractionList {
-            return RetrofitManager.getInstance().attrationListAPI.getAttractionListSuspend(
+            return RetrofitManager.attrationListAPI.getAttractionListSuspend(
                 language, page
             )
         }
@@ -20,7 +20,7 @@ class GetAttractionList {
         fun getAttractionList(language: String, page: String, future: RequestFuture<AttractionList>) {
 //            val url = RetrofitManager.getInstance().baseUrl + "zh-tw/Attractions/All?"
 //            RetrofitManager.getInstance().attrationListAPI.getAttractionListURL(
-            RetrofitManager.getInstance().attrationListAPI.getAttractionList(
+            RetrofitManager.attrationListAPI.getAttractionList(
                 language, page
             ).enqueue(object : RetrofitCallback<AttractionList>() {
                 override fun onResponse(
